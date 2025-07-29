@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-indigo-500 p-4 text-white">
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="ml-8">Dashboard</a>
+            <a href="{% url 'transection_Add' %}" class="ml-4">Add Transection</a>
+            <a href="{% url 'Transaction' %}" class="ml-4">Show Transaction</a>
+            <a href="{% url 'Goal_add' %}" class="ml-4">Add Goal</a>
+            <form id="logout-form" action="{% url 'logout' %}" method="post" class="inline">
+                {% csrf_token %}
+                <a href="" onclick="document.getElementById('logout-form').submit(); return false;" class="ml-4">Logout</a>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="ml-4">Login</a>
+            <a href="{% url 'register' %}" class="ml-4">Register</a>
+        {% endif %}
+    </nav>
+    {% block content %}{% endblock content %}
+
+    {% if messages %}
+        <div id="message-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 w-96">
+            {% for message in messages %}
+                <div class="bg-{{ message.tags }}-500 text-white p-3 rounded shadow-md mb-2 bg-purple-700">
+                    Message: {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        // Automatically fade out messages after 5 seconds
+        setTimeout(function() {
+            let messageContainer = document.getElementById('message-container');
+            if (messageContainer) {
+                messageContainer.style.transition = "opacity 0.5s ease-out";
+                messageContainer.style.opacity = "0";
+                setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+            }
+        }, 5000); // 5 seconds
+    </script>
+</body>
+</html>
